@@ -6,16 +6,22 @@
 package org.emides.entities;
 
 import java.io.Serializable;
+import java.util.Collection;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -26,82 +32,115 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Produits.findAll", query = "SELECT p FROM Produits p"),
-    @NamedQuery(name = "Produits.findById", query = "SELECT p FROM Produits p WHERE p.id = :id"),
-    @NamedQuery(name = "Produits.findByLibelle", query = "SELECT p FROM Produits p WHERE p.libelle = :libelle"),
-    @NamedQuery(name = "Produits.findByDescription", query = "SELECT p FROM Produits p WHERE p.description = :description"),
-    @NamedQuery(name = "Produits.findByPrixJournalier", query = "SELECT p FROM Produits p WHERE p.prixJournalier = :prixJournalier")})
+    @NamedQuery(name = "Produits.findByProduitsId", query = "SELECT p FROM Produits p WHERE p.produitsId = :produitsId"),
+    @NamedQuery(name = "Produits.findByProduitsNom", query = "SELECT p FROM Produits p WHERE p.produitsNom = :produitsNom"),
+    @NamedQuery(name = "Produits.findByProduitsDescription", query = "SELECT p FROM Produits p WHERE p.produitsDescription = :produitsDescription"),
+    @NamedQuery(name = "Produits.findByProduitsPrixJournalier", query = "SELECT p FROM Produits p WHERE p.produitsPrixJournalier = :produitsPrixJournalier")})
 public class Produits implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @NotNull
-    @Column(name = "id")
-    private Integer id;
+    @Column(name = "produits_id")
+    private Integer produitsId;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 20)
-    @Column(name = "libelle")
-    private String libelle;
+    @Column(name = "produits_nom")
+    private String produitsNom;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 1000)
-    @Column(name = "description")
-    private String description;
+    @Column(name = "produits_description")
+    private String produitsDescription;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "prix_journalier")
-    private float prixJournalier;
+    @Column(name = "produits_prix_journalier")
+    private float produitsPrixJournalier;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "produits")
+    private Collection<ContenuCommande> contenuCommandeCollection;
+    @JoinColumn(name = "produits_id_categorie", referencedColumnName = "categorie_id")
+    @ManyToOne(optional = false)
+    private Categories produitsIdCategorie;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "produits")
+    private Collection<PlanningProduit> planningProduitCollection;
 
     public Produits() {
     }
 
-    public Produits(Integer id) {
-        this.id = id;
+    public Produits(Integer produitsId) {
+        this.produitsId = produitsId;
     }
 
-    public Produits(Integer id, String libelle, String description, float prixJournalier) {
-        this.id = id;
-        this.libelle = libelle;
-        this.description = description;
-        this.prixJournalier = prixJournalier;
+    public Produits(Integer produitsId, String produitsNom, String produitsDescription, float produitsPrixJournalier) {
+        this.produitsId = produitsId;
+        this.produitsNom = produitsNom;
+        this.produitsDescription = produitsDescription;
+        this.produitsPrixJournalier = produitsPrixJournalier;
     }
 
-    public Integer getId() {
-        return id;
+    public Integer getProduitsId() {
+        return produitsId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setProduitsId(Integer produitsId) {
+        this.produitsId = produitsId;
     }
 
-    public String getLibelle() {
-        return libelle;
+    public String getProduitsNom() {
+        return produitsNom;
     }
 
-    public void setLibelle(String libelle) {
-        this.libelle = libelle;
+    public void setProduitsNom(String produitsNom) {
+        this.produitsNom = produitsNom;
     }
 
-    public String getDescription() {
-        return description;
+    public String getProduitsDescription() {
+        return produitsDescription;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setProduitsDescription(String produitsDescription) {
+        this.produitsDescription = produitsDescription;
     }
 
-    public float getPrixJournalier() {
-        return prixJournalier;
+    public float getProduitsPrixJournalier() {
+        return produitsPrixJournalier;
     }
 
-    public void setPrixJournalier(float prixJournalier) {
-        this.prixJournalier = prixJournalier;
+    public void setProduitsPrixJournalier(float produitsPrixJournalier) {
+        this.produitsPrixJournalier = produitsPrixJournalier;
+    }
+
+    @XmlTransient
+    public Collection<ContenuCommande> getContenuCommandeCollection() {
+        return contenuCommandeCollection;
+    }
+
+    public void setContenuCommandeCollection(Collection<ContenuCommande> contenuCommandeCollection) {
+        this.contenuCommandeCollection = contenuCommandeCollection;
+    }
+
+    public Categories getProduitsIdCategorie() {
+        return produitsIdCategorie;
+    }
+
+    public void setProduitsIdCategorie(Categories produitsIdCategorie) {
+        this.produitsIdCategorie = produitsIdCategorie;
+    }
+
+    @XmlTransient
+    public Collection<PlanningProduit> getPlanningProduitCollection() {
+        return planningProduitCollection;
+    }
+
+    public void setPlanningProduitCollection(Collection<PlanningProduit> planningProduitCollection) {
+        this.planningProduitCollection = planningProduitCollection;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (produitsId != null ? produitsId.hashCode() : 0);
         return hash;
     }
 
@@ -112,7 +151,7 @@ public class Produits implements Serializable {
             return false;
         }
         Produits other = (Produits) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.produitsId == null && other.produitsId != null) || (this.produitsId != null && !this.produitsId.equals(other.produitsId))) {
             return false;
         }
         return true;
@@ -120,7 +159,7 @@ public class Produits implements Serializable {
 
     @Override
     public String toString() {
-        return "org.emides.entities.Produits[ id=" + id + " ]";
+        return "org.emides.entities.Produits[ produitsId=" + produitsId + " ]";
     }
     
 }
