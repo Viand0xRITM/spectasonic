@@ -235,10 +235,35 @@ public class SpectaRentSystem {
     @Produces({"application/text"})
     @Path("createOrder")
     public String createOrder(String x) {  
-        int orderID = 10;
+        int orderID = 0;
               
         String response = "NO ERROR";
         
+        String uri = "http://localhost:8080/spectasonic_location/webresources/commande/count";
+        
+        //get order count to know next order id
+         try{
+            URL url = new URL(uri);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Accept", "text/plain");
+
+            BufferedReader br = new BufferedReader(new InputStreamReader((connection.getInputStream())));
+
+            String output;
+            response = "";
+            while ((output = br.readLine()) != null) {
+                    response += output;
+            }
+            orderID = Integer.parseInt(response) + 1;
+            
+            connection.disconnect();
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(SpectaRentSystem.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(SpectaRentSystem.class.getName()).log(Level.SEVERE, null, ex);
+        }     
+         
         try {
             JSONObject inputJSON = new JSONObject(x);
             int customerID = (Integer) inputJSON.get("customerID");
@@ -301,7 +326,7 @@ public class SpectaRentSystem {
     }
     
     private String createOrderContent(String customer, String date, int orderID, int productID, int quantity) {
-        String response = "\nRequest CREATE ORDER\n";
+        String response = "\nRequest CREATE ORDER CONTENT\n";
         String uri = "http://localhost:8080/spectasonic_location/webresources/contenucommande";
         int errorCode = 0;
         
