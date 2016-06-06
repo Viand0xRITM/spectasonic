@@ -173,38 +173,8 @@ public class SpectaRentSystem {
     @Produces({"application/json"})
     public String getProductAvailability(@PathParam("id") Integer id) {
         String response = "ERROR during request";
-        String uri = "http://localhost:8080/spectasonic_location/webresources/planningproduit/" + id;
-        
-        try{
-            URL url = new URL(uri);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            connection.setRequestProperty("Accept", "application/json");
-
-            BufferedReader br = new BufferedReader(new InputStreamReader((connection.getInputStream())));
-
-            String output;
-            response = "";
-            while ((output = br.readLine()) != null) {
-                    response += output;
-            }
-            
-            connection.disconnect();
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(SpectaRentSystem.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(SpectaRentSystem.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        return response;
-    }
-    
-    @GET
-    @Path("getProductAvailability")
-    @Produces({"application/json"})
-    public String getProductAvailability() {
-        String response = "ERROR during request";
         String uri = "http://localhost:8080/spectasonic_location/webresources/planningproduit/";
+        String productAvailability = "";
         
         try{
             URL url = new URL(uri);
@@ -227,7 +197,33 @@ public class SpectaRentSystem {
             Logger.getLogger(SpectaRentSystem.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        return response;
+        try { 
+            JSONArray productList = new JSONArray(response);
+            productAvailability += "[";
+            for(int i = 0; i < productList.length(); i++){
+                int productID;
+                boolean disponibility;
+                
+                JSONObject element = (JSONObject) productList.get(i);
+                JSONObject product = (JSONObject) element.get("produits");
+                productID = (Integer) product.get("produitsId");
+                disponibility  = (boolean) element.get("planningProduitDisponibilite");
+                
+                if(disponibility && productID == id){
+                    if(i != 0 && !productAvailability.equals("["))
+                    {
+                        productAvailability += ",";
+                    }
+                    productAvailability += element.toString();
+                    
+                }
+            }
+            productAvailability += "]";
+        } catch (JSONException ex) {
+            Logger.getLogger(SpectaRentSystem.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return productAvailability;
     }
     
     @GET
