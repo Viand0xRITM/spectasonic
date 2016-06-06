@@ -292,16 +292,21 @@ public class SpectaRentSystem {
         
         try { 
             JSONArray productList = new JSONArray(response); 
-            
+            productByCategory = "[";
             for(int i = 0; i < productList.length(); i++){
                 int categoryID;
                 JSONObject product = (JSONObject) productList.get(i);
                 JSONObject categoryInformation = (JSONObject) product.get("produitsIdCategorie");
                 categoryID = (Integer) categoryInformation.get("categorieId");
                 if(categoryID == id){
+                    if(i != 0 && !productByCategory.equals("["))
+                    {
+                        productByCategory += ",";
+                    }
                     productByCategory += product.toString();
                 }
             }
+            productByCategory += "]";
         } catch (JSONException ex) {
             Logger.getLogger(SpectaRentSystem.class.getName()).log(Level.SEVERE, null, ex);
         }
