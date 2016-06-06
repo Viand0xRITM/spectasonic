@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.emides.service;
+package org.emides.services;
 
 import java.util.Set;
 import javax.ws.rs.core.Application;
@@ -29,13 +29,12 @@ public class ApplicationConfig extends Application {
      * If required, comment out calling this method in getClasses().
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
-        resources.add(org.emides.service.CategoriesFacadeREST.class);
-        resources.add(org.emides.service.ClientsFacadeREST.class);
-        resources.add(org.emides.service.CommandeFacadeREST.class);
-        resources.add(org.emides.service.ContenuCommandeFacadeREST.class);
-        resources.add(org.emides.service.PlanningProduitFacadeREST.class);
-        resources.add(org.emides.service.ProduitsFacadeREST.class);
-        resources.add(org.emides.service.corsFilter.class);
+        resources.add(org.emides.services.CORSfilter.class);
+        resources.add(org.emides.services.CategoriesFacadeREST.class);
+        resources.add(org.emides.services.ClientsFacadeREST.class);
+        resources.add(org.emides.services.CommandeFacadeREST.class);
+        resources.add(org.emides.services.ContenuCommandeFacadeREST.class);
+        resources.add(org.emides.services.PlanningProduitFacadeREST.class);
+        resources.add(org.emides.services.ProduitsFacadeREST.class);
     }
-    
 }

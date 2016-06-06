@@ -35,7 +35,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Produits.findByProduitsId", query = "SELECT p FROM Produits p WHERE p.produitsId = :produitsId"),
     @NamedQuery(name = "Produits.findByProduitsNom", query = "SELECT p FROM Produits p WHERE p.produitsNom = :produitsNom"),
     @NamedQuery(name = "Produits.findByProduitsDescription", query = "SELECT p FROM Produits p WHERE p.produitsDescription = :produitsDescription"),
-    @NamedQuery(name = "Produits.findByProduitsPrixJournalier", query = "SELECT p FROM Produits p WHERE p.produitsPrixJournalier = :produitsPrixJournalier")})
+    @NamedQuery(name = "Produits.findByProduitsPrixJournalier", query = "SELECT p FROM Produits p WHERE p.produitsPrixJournalier = :produitsPrixJournalier"),
+    @NamedQuery(name = "Produits.findByProduitImage", query = "SELECT p FROM Produits p WHERE p.produitImage = :produitImage")})
 public class Produits implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -57,6 +58,11 @@ public class Produits implements Serializable {
     @NotNull
     @Column(name = "produits_prix_journalier")
     private float produitsPrixJournalier;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 40)
+    @Column(name = "produit_image")
+    private String produitImage;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "produits")
     private Collection<ContenuCommande> contenuCommandeCollection;
     @JoinColumn(name = "produits_id_categorie", referencedColumnName = "categorie_id")
@@ -72,11 +78,12 @@ public class Produits implements Serializable {
         this.produitsId = produitsId;
     }
 
-    public Produits(Integer produitsId, String produitsNom, String produitsDescription, float produitsPrixJournalier) {
+    public Produits(Integer produitsId, String produitsNom, String produitsDescription, float produitsPrixJournalier, String produitImage) {
         this.produitsId = produitsId;
         this.produitsNom = produitsNom;
         this.produitsDescription = produitsDescription;
         this.produitsPrixJournalier = produitsPrixJournalier;
+        this.produitImage = produitImage;
     }
 
     public Integer getProduitsId() {
@@ -109,6 +116,14 @@ public class Produits implements Serializable {
 
     public void setProduitsPrixJournalier(float produitsPrixJournalier) {
         this.produitsPrixJournalier = produitsPrixJournalier;
+    }
+
+    public String getProduitImage() {
+        return produitImage;
+    }
+
+    public void setProduitImage(String produitImage) {
+        this.produitImage = produitImage;
     }
 
     @XmlTransient

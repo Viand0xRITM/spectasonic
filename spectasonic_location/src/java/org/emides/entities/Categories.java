@@ -34,7 +34,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Categories.findAll", query = "SELECT c FROM Categories c"),
     @NamedQuery(name = "Categories.findByCategorieId", query = "SELECT c FROM Categories c WHERE c.categorieId = :categorieId"),
     @NamedQuery(name = "Categories.findByCategorieNom", query = "SELECT c FROM Categories c WHERE c.categorieNom = :categorieNom"),
-    @NamedQuery(name = "Categories.findByCategoriesDesc", query = "SELECT c FROM Categories c WHERE c.categoriesDesc = :categoriesDesc")})
+    @NamedQuery(name = "Categories.findByCategoriesDesc", query = "SELECT c FROM Categories c WHERE c.categoriesDesc = :categoriesDesc"),
+    @NamedQuery(name = "Categories.findByCategorieImage", query = "SELECT c FROM Categories c WHERE c.categorieImage = :categorieImage")})
 public class Categories implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -52,6 +53,11 @@ public class Categories implements Serializable {
     @Size(min = 1, max = 1000)
     @Column(name = "categories_desc")
     private String categoriesDesc;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 40)
+    @Column(name = "categorie_image")
+    private String categorieImage;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "produitsIdCategorie")
     private Collection<Produits> produitsCollection;
 
@@ -62,10 +68,11 @@ public class Categories implements Serializable {
         this.categorieId = categorieId;
     }
 
-    public Categories(Integer categorieId, String categorieNom, String categoriesDesc) {
+    public Categories(Integer categorieId, String categorieNom, String categoriesDesc, String categorieImage) {
         this.categorieId = categorieId;
         this.categorieNom = categorieNom;
         this.categoriesDesc = categoriesDesc;
+        this.categorieImage = categorieImage;
     }
 
     public Integer getCategorieId() {
@@ -90,6 +97,14 @@ public class Categories implements Serializable {
 
     public void setCategoriesDesc(String categoriesDesc) {
         this.categoriesDesc = categoriesDesc;
+    }
+
+    public String getCategorieImage() {
+        return categorieImage;
+    }
+
+    public void setCategorieImage(String categorieImage) {
+        this.categorieImage = categorieImage;
     }
 
     @XmlTransient
