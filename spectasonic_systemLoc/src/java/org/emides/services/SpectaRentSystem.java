@@ -71,7 +71,38 @@ public class SpectaRentSystem {
         return response;
     }
     
-       @GET
+    @GET
+    @Path("getCategories")
+    @Produces("application/json")
+    public String getCategories() {
+        String response = "ERROR during request";
+        String uri = "http://localhost:8080/spectasonic_location/webresources/categories";
+        
+        try{
+            URL url = new URL(uri);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Accept", "application/json");
+
+            BufferedReader br = new BufferedReader(new InputStreamReader((connection.getInputStream())));
+
+            String output;
+            response = "";
+            while ((output = br.readLine()) != null) {
+                    response += output;
+            }
+            
+            connection.disconnect();
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(SpectaRentSystem.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(SpectaRentSystem.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return response;
+    }
+    
+    @GET
     @Path("getProducts/{id}")
     @Produces("application/json")
     public String getProduct(@PathParam("id") Integer id) {
@@ -138,7 +169,7 @@ public class SpectaRentSystem {
     }
     
     @GET
-    @Path("getProductAvailabilty/{id}")
+    @Path("getProductAvailability/{id}")
     @Produces({"application/json"})
     public String getProductAvailability(@PathParam("id") Integer id) {
         String response = "ERROR during request";
@@ -169,7 +200,7 @@ public class SpectaRentSystem {
     }
     
     @GET
-    @Path("getProductAvailabilty")
+    @Path("getProductAvailability")
     @Produces({"application/json"})
     public String getProductAvailability() {
         String response = "ERROR during request";
@@ -228,6 +259,54 @@ public class SpectaRentSystem {
         }
         
         return response;
+    }
+    
+    @GET
+    @Path("getProductByCategory/{id}")
+    @Produces({"application/json"})
+    public String getProductByCategory(@PathParam("id") Integer id) {
+        String response = "ERROR during request";
+        String uri = "http://localhost:8080/spectasonic_location/webresources/produits";
+        String productByCategory = "";
+        
+        try{
+            URL url = new URL(uri);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Accept", "application/json");
+
+            BufferedReader br = new BufferedReader(new InputStreamReader((connection.getInputStream())));
+
+            String output;
+            response = "";
+            while ((output = br.readLine()) != null) {
+                    response += output;
+            }
+            
+            connection.disconnect();
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(SpectaRentSystem.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(SpectaRentSystem.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        try { 
+            JSONArray productList = new JSONArray(response); 
+            
+            for(int i = 0; i < productList.length(); i++){
+                int categoryID;
+                JSONObject product = (JSONObject) productList.get(i);
+                JSONObject categoryInformation = (JSONObject) product.get("produitsIdCategorie");
+                categoryID = (Integer) categoryInformation.get("categorieId");
+                if(categoryID == id){
+                    productByCategory += product.toString();
+                }
+            }
+        } catch (JSONException ex) {
+            Logger.getLogger(SpectaRentSystem.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return productByCategory;
     }
     
     @POST
